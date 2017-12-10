@@ -1,15 +1,26 @@
-var mysql = require('mysql')
-var http = require('http')
-http.createServer(function (request, response) {
+var express = require('express');
+var parser = require('body-parser');
+var path = require('path');
+var routers = require('./routers');
+var app = express();
+var mustacheExpress = require('mustache-express');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+//设置模板目录
+app.set('views', path.join(__dirname, 'public'));
+
+
+app.use(parser.urlencoded({
+    extended: false
+}));
+
+routers(app);
+
+app.use(function(erro, req,res,next) {
+    if(erro) {console.log(erro)};
+});
+
+app.listen(4000, '123.57.209.239', function () {
     
-        // 发送 HTTP 头部 
-        // HTTP 状态值: 200 : OK
-        // 内容类型: text/plain
-        response.writeHead(200, {'Content-Type': 'text/plain;charset=utf-8'});
-    
-        // 发送响应数据 "Hello World"
-        response.end('黄康锋   Meaningful Day, Meaningful Life; 有意义的人生，是有意义的时光\n');
-    }).listen(8888);
-    
-    // 终端打印如下信息
-    console.log('Server running at :8888/');
